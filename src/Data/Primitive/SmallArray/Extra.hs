@@ -17,7 +17,6 @@ module Data.Primitive.SmallArray.Extra
     , fromList
     ) where
 
-import Control.DeepSeq
 import qualified GHC.Exts
 import Control.Monad.ST (ST, runST)
 import qualified Data.Foldable as F
@@ -111,13 +110,6 @@ unsafeUpdateSmallArrayM ary idx b = do
     _ <- unsafeFreezeSmallArray mary
     return ()
 {-# inline unsafeUpdateSmallArrayM #-}
-
-instance NFData a => NFData (SmallArray a) where
-  rnf a0 = go a0 (length a0) 0 where
-    go !a !n !i
-      | i >= n = ()
-      | otherwise = rnf (indexSmallArray a i) `seq` go a n (i + 1)
-  {-# inline rnf #-} 
 
 fromList :: [a] -> SmallArray a
 fromList = GHC.Exts.fromList
